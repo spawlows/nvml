@@ -46,5 +46,3 @@ Persist_func Persist;
 
 void pmem_set_persist_func(void (*persist_func)(void *addr,
 			size_t len, int flags));
-
-void libpmem_persist(int is_pmem, void *addr, size_t len);

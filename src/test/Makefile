@@ -46,7 +46,7 @@ TEST = blk_nblock\
        pmem_clflush_proc\
        pmem_is_pmem\
        pmem_is_pmem_proc\
-       pmem_map\
+       pmem_pool_open\
        pmem_map_raw\
        scope\
        traces\

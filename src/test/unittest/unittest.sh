@@ -204,7 +204,7 @@ function setup() {
 # check -- check test results (using .match files)
 #
 function check() {
-	../match *$UNITTEST_NUM.log.match
+	../match $(find . -regex "[^0-9]*${UNITTEST_NUM}\.log\.match" | xargs)
 }
 
 #

@@ -31,20 +31,20 @@
  */
 
 /*
- * pmem_map.c -- unit test for mapping different types of pmem pools
+ * pmem_pool_open.c -- unit test for pool_openping different types of pmem pools
  *
- * usage: pmem_map <type>:file ...
+ * usage: pmem_pool_open <type>:file ...
  *
- * each file is mapped with:
- * 	pmemtrn_map() if the filename starts with t:
- * 	pmemblk_map() if the filename starts with b:
- * 	pmemlog_map() if the filename starts with l:
+ * each file is oppened with:
+ * 	pmemobj_pool_open() if the filename starts with t:
+ * 	pmemblk_pool_open() if the filename starts with b:
+ * 	pmemlog_pool_open() if the filename starts with l:
  * and the handle returned is dereferenced to force a SEGV.
  */
 
 #include "unittest.h"
 
-#define	CHECK_BYTES 4096	/* bytes to compare before/after map call */
+#define	CHECK_BYTES 4096	/* bytes to compare before/after open call */
 
 sigjmp_buf Jmp;
 
@@ -62,7 +62,7 @@ signal_handler(int sig)
 int
 main(int argc, char *argv[])
 {
-	START(argc, argv, "pmem_map");
+	START(argc, argv, "pmem_pool_open");
 
 	if (argc < 2)
 		FATAL("usage: %s <type>:file ...", argv[0]);
@@ -72,61 +72,64 @@ main(int argc, char *argv[])
 	v.sv_handler = signal_handler;
 	SIGVEC(SIGSEGV, &v, NULL);
 
-	/* map each file argument with the given map type */
+	/* open each file argument with the given pool type */
 	for (int arg = 1; arg < argc; arg++) {
-		if (strchr("tbl", argv[arg][0]) == NULL || argv[arg][1] != ':')
-			FATAL("type must be t: or b: or l:");
+		if (strchr("obl", argv[arg][0]) == NULL || argv[arg][1] != ':')
+			FATAL("type must be o: or b: or l:");
 
-		int fd = OPEN(&argv[arg][2], O_RDWR);
+		const char *path = &argv[arg][2];
+		int fd = OPEN(path, O_RDWR);
 
 		char before[CHECK_BYTES];
 		char after[CHECK_BYTES];
 
 		READ(fd, before, CHECK_BYTES);
+		CLOSE(fd);
 
 		void *handle = NULL;
 		switch (argv[arg][0]) {
-		case 't':
-			handle = pmemtrn_map(fd);
+		case 'o':
+			handle = pmemobj_pool_open(path);
 			break;
 
 		case 'b':
-			handle = pmemblk_map(fd, 4096);
+			handle = pmemblk_pool_open(path, 4096);
 			break;
 
 		case 'l':
-			handle = pmemlog_map(fd);
+			handle = pmemlog_pool_open(path);
 			break;
 
 		default:
 			FATAL(NULL);	/* can't happen */
 		}
 
+		fd = OPEN(path, O_RDWR);
 		LSEEK(fd, (off_t)0, SEEK_SET);
 
 		if (READ(fd, after, CHECK_BYTES) == CHECK_BYTES) {
 			if (memcmp(before, after, CHECK_BYTES))
-				OUT("%s: first %d bytes changed during map",
-					argv[arg], CHECK_BYTES);
+				OUT("%s: first %d bytes changed during "
+					"pool_open", argv[arg], CHECK_BYTES);
 			else
-				OUT("%s: first %d bytes unchanged during map",
-					argv[arg], CHECK_BYTES);
+				OUT("%s: first %d bytes unchanged during "
+					"pool_open", argv[arg], CHECK_BYTES);
 		}
 
-		close(fd);
+		CLOSE(fd);
 
 		if (handle == NULL) {
 			switch (argv[arg][0]) {
-			case 't':
-				OUT("!pmemtrn_map");
+			case 'o':
+				OUT("!pmemobj_pool_open");
 				break;
 
 			case 'b':
-				OUT("!pmemblk_map");
+				OUT("!pmemblk_pool_open");
 				break;
 
 			case 'l':
-				OUT("!pmemlog_map");
+				OUT("!pmemlog_pool_open");
 				break;
 
 			default:
@@ -138,18 +141,18 @@ main(int argc, char *argv[])
 
 			OUT("x = %c", x);	/* shouldn't get here */
 		} else {
-			/* back from signal handler, unmap the pool */
+			/* back from signal handler, close the pool */
 			switch (argv[arg][0]) {
-			case 't':
-				pmemtrn_unmap(handle);
+			case 'o':
+				pmemobj_pool_close(handle);
 				break;
 
 			case 'b':
-				pmemblk_unmap(handle);
+				pmemblk_pool_close(handle);
 				break;
 
 			case 'l':
-				pmemlog_unmap(handle);
+				pmemlog_pool_close(handle);
 				break;
 
 			default:

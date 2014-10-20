@@ -55,6 +55,20 @@
 Persist_func Persist = pmem_persist;
 
 /*
+ * libpmem_init -- load-time initialization for libpmem
+ *
+ * Called automatically by the run-time loader.
+ */
+__attribute__((constructor))
+static void
+libpmem_init(void)
+{
+	out_init(LOG_PREFIX, LOG_LEVEL_VAR, LOG_FILE_VAR);
+	LOG(3, NULL);
+	util_init();
+}
+
+/*
  * pmem_set_persist_func -- allow override of persist_func used libpmem
  */
 void
@@ -385,4 +399,55 @@ pmem_map(int fd)
 
 	LOG(3, "returning %p", addr);
 	return addr;
+}
+
+/*
+ * pmem_check_version -- see if library meets application version requirements
+ */
+const char *
+pmem_check_version(unsigned major_required, unsigned minor_required)
+{
+	LOG(3, "major_required %u minor_required %u",
+			major_required, minor_required);
+
+	static char errstr[] =
+		"libpmem major version mismatch (need XXXX, found YYYY)";
+
+	if (major_required != PMEM_MAJOR_VERSION) {
+		sprintf(errstr,
+			"libpmem major version mismatch (need %d, found %d)",
+			major_required, PMEM_MAJOR_VERSION);
+		LOG(1, "%s", errstr);
+		return errstr;
+	}
+
+	if (minor_required > PMEM_MINOR_VERSION) {
+		sprintf(errstr,
+			"libpmem minor version mismatch (need %d, found %d)",
+			minor_required, PMEM_MINOR_VERSION);
+		LOG(1, "%s", errstr);
+		return errstr;
+	}
+
+	return NULL;
+}
+
+/*
+ * pmem_set_funcs -- allow overriding libpmem's call to malloc, etc.
+ */
+void
+pmem_set_funcs(
+		void *(*malloc_func)(size_t size),
+		void (*free_func)(void *ptr),
+		void *(*realloc_func)(void *ptr, size_t size),
+		char *(*strdup_func)(const char *s),
+		void (*print_func)(const char *s),
+		void (*persist_func)(void *addr, size_t len, int flags))
+{
+	LOG(3, NULL);
+
+	util_set_alloc_funcs(malloc_func, free_func,
+			realloc_func, strdup_func);
+	out_set_print_func(print_func);
+	pmem_set_persist_func(persist_func);
 }

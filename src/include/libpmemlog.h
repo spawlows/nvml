@@ -31,22 +31,55 @@
  */
 
 /*
- * trn.h -- internal definitions for libpmem trn module
+ * libpmemlog.h -- definitions of libpmem entry points
+ *
+ * This library provides support for programming with Persistent Memory (PMEM).
+ *
+ * The libpmem entry points are divided below into these categories:
+ *	- basic PMEM flush-to-durability support
+ *	- support for memory allocation and transactions in PMEM
+ *	- support for arrays of atomically-writable blocks
+ *	- support for PMEM-resident log files
+ *	- managing overall library behavior
+ *
+ * See libpmemlog(3) for details.
  */
 
-/* attributes of the trn memory pool format for the pool header */
-#define	TRN_HDR_SIG "PMEMTRN"	/* must be 8 bytes including '\0' */
-#define	TRN_FORMAT_MAJOR 1
-#define	TRN_FORMAT_COMPAT 0x0000
-#define	TRN_FORMAT_INCOMPAT 0x0000
-#define	TRN_FORMAT_RO_COMPAT 0x0000
+#ifndef	LIBPMEMLOG_H
+#define	LIBPMEMLOG_H 1
 
-struct pmemtrn {
-	struct pool_hdr hdr;	/* memory pool header */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-	/* root info for on-media format... */
+#include <sys/types.h>
+#include <sys/uio.h>
 
-	/* some run-time state, allocated out of memory pool... */
-	void *addr;		/* mapped region */
-	size_t size;		/* size of mapped region */
-};
+/*
+ * opaque types internal to libpmemlog
+ */
+typedef struct pmemlog PMEMlogpool;
+
+/*
+ * support for PMEM-resident log files...
+ */
+#define	PMEMLOG_MIN_POOL ((size_t)(1024 * 1024 * 2)) /* min pool size: 2MB */
+
+PMEMlogpool *pmemlog_pool_open(const char *path);
+void pmemlog_pool_close(PMEMlogpool *plp);
+int pmemlog_pool_check(const char *path);
+
+size_t pmemlog_nbyte(PMEMlogpool *plp);
+int pmemlog_append(PMEMlogpool *plp, const void *buf, size_t count);
+int pmemlog_appendv(PMEMlogpool *plp, const struct iovec *iov, int iovcnt);
+off_t pmemlog_tell(PMEMlogpool *plp);
+void pmemlog_rewind(PMEMlogpool *plp);
+void pmemlog_walk(PMEMlogpool *plp, size_t chunksize,
+	int (*process_chunk)(const void *buf, size_t len, void *arg),
+	void *arg);
+
+
+#ifdef __cplusplus
+}
+#endif
+#endif	/* libpmemlog.h */

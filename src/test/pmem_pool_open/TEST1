@@ -32,22 +32,32 @@
 #
 
 #
-# src/test/scope/TEST6 -- scope test to check libpmem symbols (nondebug)
+# src/test/pmem_pool_open/TEST1 -- unit test for pmem{trn,blk,log}_pool_open
 #
-export UNITTEST_NAME=scope/TEST6
-export UNITTEST_NUM=6
+export UNITTEST_NAME=pmem_pool_open/TEST1
+export UNITTEST_NUM=1
 
 # standard unit test setup
 . ../unittest/unittest.sh
 
 require_fs_type local
-require_build_type nondebug
 
 setup
 
-(nm -g ../../nondebug/libpmem.a |\
-	perl -ne 'print if s/^[0-9a-z]+ T (\w+)/$1/' |\
-	sort > out6.log) 2> err6.log
+rm -f $DIR/testfile1
+truncate -s 2G $DIR/testfile1
+#
+# pass the same file multiple times
+#	the first time the file is new, so the pool is created
+#	(and the test program will report the first 4k changed)
+#	the second time the file has a pool in it
+#	(and the test program will report the first 4k didn't change)
+#	the third time we pass the pool to the wrong pool_open function
+#	(and the test program will report the pool_open function failed)
+#
+expect_normal_exit ./pmem_pool_open$EXESUFFIX\
+	b:$DIR/testfile1 b:$DIR/testfile1 l:$DIR/testfile1
+rm $DIR/testfile1
 
 check
 

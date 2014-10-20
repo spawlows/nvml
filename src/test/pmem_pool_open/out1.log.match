@@ -1,0 +1,9 @@
+pmem_pool_open/TEST1: START: pmem_pool_open
+ ./pmem_pool_open$(*) b:$(*)/testfile1 b:$(*)/testfile1 l:$(*)/testfile1
+b:$(*)/testfile1: first 4096 bytes changed during pool_open
+signal: Segmentation fault
+b:$(*)/testfile1: first 4096 bytes unchanged during pool_open
+signal: Segmentation fault
+l:$(*)/testfile1: first 4096 bytes unchanged during pool_open
+pmemlog_pool_open: Invalid argument
+pmem_pool_open/TEST1: Done

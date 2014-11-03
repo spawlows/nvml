@@ -61,6 +61,19 @@ extern "C" {
 typedef struct pmemblk PMEMblkpool;
 
 /*
+ * PMEMBLK_MAJOR_VERSION and PMEMBLK_MINOR_VERSION provide the current
+ * version of the libpmemblk API as provided by this header file.
+ * Applications can verify that the version available at run-time
+ * is compatible with the version used at compile-time by passing
+ * these defines to pmemblk_check_version().
+ */
+#define	PMEMBLK_MAJOR_VERSION 1
+#define	PMEMBLK_MINOR_VERSION 0
+const char *pmemblk_check_version(
+		unsigned major_required,
+		unsigned minor_required);
+
+/*
  * support for arrays of atomically-writable blocks...
  */
 #define	PMEMBLK_MIN_POOL ((size_t)(1024 * 1024 * 1024)) /* min pool size: 1GB */

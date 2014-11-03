@@ -57,20 +57,6 @@
 #include "blk.h"
 
 /*
- * blk_init -- (internal) load-time initialization for blk
- *
- * Called automatically by the run-time loader.
- */
-__attribute__((constructor))
-static void
-blk_init(void)
-{
-	out_init(PMEMBLK_LOG_PREFIX, PMEMBLK_LOG_LEVEL_VAR, PMEMBLK_LOG_FILE_VAR);
-	LOG(3, NULL);
-	util_init();
-}
-
-/*
  * lane_enter -- (internal) acquire a unique lane number
  */
 static int

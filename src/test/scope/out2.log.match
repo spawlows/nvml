@@ -2,6 +2,7 @@ scope/TEST2:
 ../../debug/libpmemlog.so:
 pmemlog_append
 pmemlog_appendv
+pmemlog_check_version
 pmemlog_nbyte
 pmemlog_pool_check
 pmemlog_pool_close
@@ -12,6 +13,7 @@ pmemlog_walk
 ../../nondebug/libpmemlog.so:
 pmemlog_append
 pmemlog_appendv
+pmemlog_check_version
 pmemlog_nbyte
 pmemlog_pool_check
 pmemlog_pool_close
@@ -22,6 +24,7 @@ pmemlog_walk
 ../../debug/libpmemlog.a:
 pmemlog_append
 pmemlog_appendv
+pmemlog_check_version
 pmemlog_nbyte
 pmemlog_pool_check
 pmemlog_pool_close
@@ -32,6 +35,7 @@ pmemlog_walk
 ../../nondebug/libpmemlog.a:
 pmemlog_append
 pmemlog_appendv
+pmemlog_check_version
 pmemlog_nbyte
 pmemlog_pool_check
 pmemlog_pool_close

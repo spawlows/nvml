@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Intel Corporation
+ * Copyright (c) 2013, Intel Corporation
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -26,58 +26,66 @@
  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
  * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY LOG OF THE USE
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /*
- * obj.c -- transactional object store implementation
+ * libpmeblk.c -- pmem entry points for libpmemblk
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
 #include <stdint.h>
-#include <inttypes.h>
-#include <uuid/uuid.h>
-#include <libpmemobj.h>
+#include <string.h>
+
+#include "libpmemblk.h"
 #include "util.h"
 #include "out.h"
-#include "obj.h"
+#include "blk.h"
 
 /*
- * pmemobj_pool_open -- open a transactional memory pool
+ * libpmemblk_init -- (internal) load-time initialization for blk
+ *
+ * Called automatically by the run-time loader.
  */
-PMEMobjpool *
-pmemobj_pool_open(const char *path)
+__attribute__((constructor))
+static void
+libpmemblk_init(void)
 {
-	LOG(3, "path \"%s\"", path);
+	out_init(PMEMBLK_LOG_PREFIX, PMEMBLK_LOG_LEVEL_VAR,
+			PMEMBLK_LOG_FILE_VAR);
+	LOG(3, NULL);
+	util_init();
+}
 
-	/* XXX stub */
+/*
+ * pmemblk_check_version -- see if library meets application version requirements
+ */
+const char *
+pmemblk_check_version(unsigned major_required, unsigned minor_required)
+{
+	LOG(3, "major_required %u minor_required %u",
+			major_required, minor_required);
+
+	static char errstr[] =
+		"libpmemblk major version mismatch (need XXXX, found YYYY)";
+
+	if (major_required != PMEMBLK_MAJOR_VERSION) {
+		sprintf(errstr,
+			"libpmemblk major version mismatch (need %d, found %d)",
+			major_required, PMEMBLK_MAJOR_VERSION);
+		LOG(1, "%s", errstr);
+		return errstr;
+	}
+
+	if (minor_required > PMEMBLK_MINOR_VERSION) {
+		sprintf(errstr,
+			"libpmemblk minor version mismatch (need %d, found %d)",
+			minor_required, PMEMBLK_MINOR_VERSION);
+		LOG(1, "%s", errstr);
+		return errstr;
+	}
+
 	return NULL;
-}
-
-/*
- * pmemobj_pool_close -- close a transactional memory pool
- */
-void
-pmemobj_pool_close(PMEMobjpool *pop)
-{
-	LOG(3, "pop %p", pop);
-
-	/* XXX stub */
-}
-
-/*
- * pmemobj_pool_check -- transactional memory pool consistency check
- */
-int
-pmemobj_pool_check(const char *path)
-{
-	LOG(3, "path \"%s\"", path);
-
-	/* XXX stub */
-	return 0;
 }

@@ -52,7 +52,6 @@
 #include <libpmem.h>
 #include <libpmemobj.h>
 #include "pmem.h"
-#include "pmem_util.h"
 #include "util.h"
 #include "out.h"
 #include "obj.h"
@@ -194,7 +193,7 @@ pmemobj_pool_open(const char *path)
 		hdrp->checksum = htole64(hdrp->checksum);
 
 		/* store pool's header */
-		pmem_util_persist(is_pmem, hdrp, sizeof (*hdrp));
+		pmem_persist_msync(is_pmem, hdrp, sizeof (*hdrp));
 
 		/* initialize pool metadata */
 		memset(&pop->rootlock, '\0', sizeof (pop->rootlock));

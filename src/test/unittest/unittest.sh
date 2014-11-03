@@ -108,6 +108,12 @@ export VMEM_LOG_LEVEL=3
 export VMEM_LOG_FILE=vmem$UNITTEST_NUM.log
 export PMEM_LOG_LEVEL=3
 export PMEM_LOG_FILE=pmem$UNITTEST_NUM.log
+export PMEMBLK_LOG_LEVEL=3
+export PMEMBLK_LOG_FILE=pmemblk$UNITTEST_NUM.log
+export PMEMLOG_LOG_LEVEL=3
+export PMEMLOG_LOG_FILE=pmemlog$UNITTEST_NUM.log
+export PMEMOBJ_LOG_LEVEL=3
+export PMEMOBJ_LOG_FILE=pmemobj$UNITTEST_NUM.log
 
 #
 # create_file -- create zeroed out files of a given length in megs

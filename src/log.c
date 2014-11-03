@@ -51,8 +51,6 @@
 #include <endian.h>
 #include <libpmem.h>
 #include <libpmemlog.h>
-
-#include "pmem.h"
 #include "util.h"
 #include "out.h"
 #include "log.h"
@@ -66,7 +64,7 @@ __attribute__((constructor))
 static void
 log_init(void)
 {
-	out_init(LOG_PREFIX, LOG_LEVEL_VAR, LOG_FILE_VAR);
+	out_init(PMEMLOG_LOG_PREFIX, PMEMLOG_LOG_LEVEL_VAR, PMEMLOG_LOG_FILE_VAR);
 	LOG(3, NULL);
 	util_init();
 }

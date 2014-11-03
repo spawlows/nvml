@@ -34,6 +34,10 @@
  * obj.h -- internal definitions for obj module
  */
 
+#define	PMEMOBJ_LOG_PREFIX "libpmemobj"
+#define	PMEMOBJ_LOG_LEVEL_VAR "PMEMOBJ_LOG_LEVEL"
+#define	PMEMOBJ_LOG_FILE_VAR "PMEMOBJ_LOG_FILE"
+
 /* attributes of the obj memory pool format for the pool header */
 #define	OBJ_HDR_SIG "OBJPOOL"	/* must be 8 bytes including '\0' */
 #define	OBJ_FORMAT_MAJOR 1

@@ -53,7 +53,7 @@ __attribute__((constructor))
 static void
 libpmem_init(void)
 {
-	out_init(LOG_PREFIX, LOG_LEVEL_VAR, LOG_FILE_VAR);
+	out_init(PMEM_LOG_PREFIX, PMEM_LOG_LEVEL_VAR, PMEM_LOG_FILE_VAR);
 	LOG(3, NULL);
 	util_init();
 }

@@ -43,7 +43,6 @@
 #include <inttypes.h>
 #include <uuid/uuid.h>
 #include <libpmemobj.h>
-#include "pmem.h"
 #include "util.h"
 #include "out.h"
 #include "obj.h"
@@ -57,7 +56,7 @@ __attribute__((constructor))
 static void
 obj_init(void)
 {
-	out_init(LOG_PREFIX, LOG_LEVEL_VAR, LOG_FILE_VAR);
+	out_init(PMEMOBJ_LOG_PREFIX, PMEMOBJ_LOG_LEVEL_VAR, PMEMOBJ_LOG_FILE_VAR);
 	LOG(3, NULL);
 	util_init();
 }

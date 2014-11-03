@@ -51,8 +51,6 @@
 #include <endian.h>
 #include <libpmem.h>
 #include <libpmemblk.h>
-
-#include "pmem.h"
 #include "util.h"
 #include "out.h"
 #include "btt.h"
@@ -67,7 +65,7 @@ __attribute__((constructor))
 static void
 blk_init(void)
 {
-	out_init(LOG_PREFIX, LOG_LEVEL_VAR, LOG_FILE_VAR);
+	out_init(PMEMBLK_LOG_PREFIX, PMEMBLK_LOG_LEVEL_VAR, PMEMBLK_LOG_FILE_VAR);
 	LOG(3, NULL);
 	util_init();
 }

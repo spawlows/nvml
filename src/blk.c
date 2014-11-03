@@ -53,7 +53,6 @@
 #include <libpmemblk.h>
 
 #include "pmem.h"
-#include "pmem_util.h"
 #include "util.h"
 #include "out.h"
 #include "btt.h"
@@ -175,7 +174,7 @@ nswrite(void *ns, int lane, const void *buf, size_t count, off_t off)
 		LOG(1, "!pthread_mutex_unlock");
 #endif
 
-	pmem_util_persist(pbp->is_pmem, dest, count);
+	pmem_persist_msync(pbp->is_pmem, dest, count);
 
 	return 0;
 }
@@ -234,7 +233,7 @@ nssync(void *ns, int lane, void *addr, size_t len)
 
 	LOG(12, "pbp %p lane %d addr %p len %zu", pbp, lane, addr, len);
 
-	pmem_util_persist(pbp->is_pmem, addr, len);
+	pmem_persist_msync(pbp->is_pmem, addr, len);
 }
 
 /* callbacks for btt_init() */
@@ -360,11 +359,11 @@ pmemblk_pool_open_common(const char *path, size_t bsize, int rdonly)
 		hdrp->checksum = htole64(hdrp->checksum);
 
 		/* store pool's header */
-		pmem_util_persist(is_pmem, hdrp, sizeof (*hdrp));
+		pmem_persist_msync(is_pmem, hdrp, sizeof (*hdrp));
 
 		/* create rest of required metadata */
 		pbp->bsize = htole32(bsize);
-		pmem_util_persist(is_pmem, &pbp->bsize, sizeof (bsize));
+		pmem_persist_msync(is_pmem, &pbp->bsize, sizeof (bsize));
 	}
 
 	/*

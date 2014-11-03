@@ -44,24 +44,7 @@
 struct pmemobjpool {
 	struct pool_hdr hdr;	/* memory pool header */
 
-	/* root info for on-media format... */
-
 	/* some run-time state, allocated out of memory pool... */
 	void *addr;		/* mapped region */
 	size_t size;		/* size of mapped region */
-
-	/* for the fake implementation... */
-	PMEMmutex rootlock;
-	void *rootdirect;
-};
-
-/* alignment of every object */
-#define	PMEMOID_INTERNAL_ALIGN 256
-
-/* info kept by the library for each allocated object */
-struct objheader {
-	uint64_t size;		/* requested object size */
-	uint64_t actual_size;	/* actual object size */
-	uint64_t flags;
-	uint64_t unused[5];
 };

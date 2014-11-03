@@ -53,7 +53,6 @@
 #include <libpmemlog.h>
 
 #include "pmem.h"
-#include "pmem_util.h"
 #include "util.h"
 #include "out.h"
 #include "log.h"
@@ -193,7 +192,7 @@ pmemlog_pool_open_common(const char *path, int rdonly)
 		hdrp->checksum = htole64(hdrp->checksum);
 
 		/* store pool's header */
-		pmem_util_persist(is_pmem, hdrp, sizeof (*hdrp));
+		pmem_persist_msync(is_pmem, hdrp, sizeof (*hdrp));
 
 		/* create rest of required metadata */
 		plp->start_offset = htole64(roundup(sizeof (*plp),
@@ -202,7 +201,7 @@ pmemlog_pool_open_common(const char *path, int rdonly)
 		plp->write_offset = plp->start_offset;
 
 		/* store non-volatile part of pool's descriptor */
-		pmem_util_persist(is_pmem, &plp->start_offset,
+		pmem_persist_msync(is_pmem, &plp->start_offset,
 							3 * sizeof (uint64_t));
 	}
 
@@ -313,7 +312,7 @@ pmemlog_persist(PMEMlogpool *plp, uint64_t new_write_offset)
 	RANGE_RW(plp->addr + old_write_offset, length);
 
 	/* persist the data */
-	pmem_util_persist(plp->is_pmem, plp->addr + old_write_offset, length);
+	pmem_persist_msync(plp->is_pmem, plp->addr + old_write_offset, length);
 
 	/* protect the log space range (debug version only) */
 	RANGE_RO(plp->addr + old_write_offset, length);
@@ -325,7 +324,7 @@ pmemlog_persist(PMEMlogpool *plp, uint64_t new_write_offset)
 	plp->write_offset = htole64(new_write_offset);
 
 	/* persist the metadata */
-	pmem_util_persist(plp->is_pmem, &plp->write_offset,
+	pmem_persist_msync(plp->is_pmem, &plp->write_offset,
 			sizeof (plp->write_offset));
 
 	/* set the write-protection again (debug version only) */
@@ -523,7 +522,7 @@ pmemlog_rewind(PMEMlogpool *plp)
 	RANGE_RW(plp->addr + sizeof (struct pool_hdr), LOG_FORMAT_DATA_ALIGN);
 
 	plp->write_offset = plp->start_offset;
-	pmem_util_persist(plp->is_pmem, &plp->write_offset, sizeof (uint64_t));
+	pmem_persist_msync(plp->is_pmem, &plp->write_offset, sizeof (uint64_t));
 
 	/* set the write-protection again (debug version only) */
 	RANGE_RO(plp->addr + sizeof (struct pool_hdr), LOG_FORMAT_DATA_ALIGN);

@@ -55,31 +55,6 @@
 Persist_func Persist = pmem_persist;
 
 /*
- * libpmem_init -- load-time initialization for libpmem
- *
- * Called automatically by the run-time loader.
- */
-__attribute__((constructor))
-static void
-libpmem_init(void)
-{
-	out_init(LOG_PREFIX, LOG_LEVEL_VAR, LOG_FILE_VAR);
-	LOG(3, NULL);
-	util_init();
-}
-
-/*
- * pmem_set_persist_func -- allow override of persist_func used libpmem
- */
-void
-pmem_set_persist_func(void (*persist_func)(void *addr, size_t len, int flags))
-{
-	LOG(3, "persist %p", persist_func);
-
-	Persist = (persist_func == NULL) ? pmem_persist : persist_func;
-}
-
-/*
  * pmem_drain -- wait for any PM stores to drain from HW buffers
  */
 void
@@ -171,6 +146,42 @@ pmem_persist(void *addr, size_t len, int flags)
 	pmem_flush(addr, len, flags);
 	__builtin_ia32_sfence();
 	pmem_drain();
+}
+
+/*
+ * pmem_persist_msync -- routine for flushing to persistence
+ *
+ * This routine calls msync() or Persist(), depending on the is_pmem flag.
+ */
+int
+pmem_persist_msync(int is_pmem, void *addr, size_t len)
+{
+	LOG(5, "is_pmem %d addr %p len %zu", is_pmem, addr, len);
+
+	if (is_pmem) {
+		Persist(addr, len, 0);
+		return 0;
+	}
+
+	uintptr_t uptr;
+	int ret;
+
+	/*
+	 * msync requires len to be a multiple of pagesize, so
+	 * adjust addr and len to represent the full 4k chunks
+	 * covering the given range.
+	 */
+
+	/* increase len by the amount we gain when we round addr down */
+	len += (uintptr_t)addr & (Pagesize - 1);
+
+	/* round addr down to page boundary */
+	uptr = (uintptr_t)addr & ~(Pagesize - 1);
+
+	if ((ret = msync((void *)uptr, len, MS_SYNC)) < 0)
+		LOG(1, "!msync");
+
+	return ret;
 }
 
 /*
@@ -399,55 +410,4 @@ pmem_map(int fd)
 
 	LOG(3, "returning %p", addr);
 	return addr;
-}
-
-/*
- * pmem_check_version -- see if library meets application version requirements
- */
-const char *
-pmem_check_version(unsigned major_required, unsigned minor_required)
-{
-	LOG(3, "major_required %u minor_required %u",
-			major_required, minor_required);
-
-	static char errstr[] =
-		"libpmem major version mismatch (need XXXX, found YYYY)";
-
-	if (major_required != PMEM_MAJOR_VERSION) {
-		sprintf(errstr,
-			"libpmem major version mismatch (need %d, found %d)",
-			major_required, PMEM_MAJOR_VERSION);
-		LOG(1, "%s", errstr);
-		return errstr;
-	}
-
-	if (minor_required > PMEM_MINOR_VERSION) {
-		sprintf(errstr,
-			"libpmem minor version mismatch (need %d, found %d)",
-			minor_required, PMEM_MINOR_VERSION);
-		LOG(1, "%s", errstr);
-		return errstr;
-	}
-
-	return NULL;
-}
-
-/*
- * pmem_set_funcs -- allow overriding libpmem's call to malloc, etc.
- */
-void
-pmem_set_funcs(
-		void *(*malloc_func)(size_t size),
-		void (*free_func)(void *ptr),
-		void *(*realloc_func)(void *ptr, size_t size),
-		char *(*strdup_func)(const char *s),
-		void (*print_func)(const char *s),
-		void (*persist_func)(void *addr, size_t len, int flags))
-{
-	LOG(3, NULL);
-
-	util_set_alloc_funcs(malloc_func, free_func,
-			realloc_func, strdup_func);
-	out_set_print_func(print_func);
-	pmem_set_persist_func(persist_func);
 }

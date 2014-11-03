@@ -61,6 +61,19 @@ extern "C" {
 typedef struct pmemobjpool PMEMobjpool;
 
 /*
+ * PMEMOBJ_MAJOR_VERSION and PMEMOBJ_MINOR_VERSION provide the current
+ * version of the libpmemobj API as provided by this header file.
+ * Applications can verify that the version available at run-time
+ * is compatible with the version used at compile-time by passing
+ * these defines to pmemobj_check_version().
+ */
+#define	PMEMOBJ_MAJOR_VERSION 1
+#define	PMEMOBJ_MINOR_VERSION 0
+const char *pmemobj_check_version(
+		unsigned major_required,
+		unsigned minor_required);
+
+/*
  * support for memory allocation and transactions in PMEM...
  */
 #define	PMEMOBJ_MIN_POOL ((size_t)(1024 * 1024 * 2)) /* min pool size: 2MB */

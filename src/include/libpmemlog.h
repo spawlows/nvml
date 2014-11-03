@@ -61,6 +61,19 @@ extern "C" {
 typedef struct pmemlog PMEMlogpool;
 
 /*
+ * PMEMLOG_MAJOR_VERSION and PMEMLOG_MINOR_VERSION provide the current
+ * version of the libpmemlog API as provided by this header file.
+ * Applications can verify that the version available at run-time
+ * is compatible with the version used at compile-time by passing
+ * these defines to pmemlog_check_version().
+ */
+#define	PMEMLOG_MAJOR_VERSION 1
+#define	PMEMLOG_MINOR_VERSION 0
+const char *pmemlog_check_version(
+		unsigned major_required,
+		unsigned minor_required);
+
+/*
  * support for PMEM-resident log files...
  */
 #define	PMEMLOG_MIN_POOL ((size_t)(1024 * 1024 * 2)) /* min pool size: 2MB */

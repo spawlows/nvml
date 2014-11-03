@@ -34,6 +34,7 @@
 #
 libpmemblk.so {
 	global:
+		pmemblk_check_version;
 		pmemblk_pool_open;
 		pmemblk_pool_close;
 		pmemblk_pool_check;

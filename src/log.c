@@ -56,20 +56,6 @@
 #include "log.h"
 
 /*
- * log_init -- load-time initialization for log
- *
- * Called automatically by the run-time loader.
- */
-__attribute__((constructor))
-static void
-log_init(void)
-{
-	out_init(PMEMLOG_LOG_PREFIX, PMEMLOG_LOG_LEVEL_VAR, PMEMLOG_LOG_FILE_VAR);
-	LOG(3, NULL);
-	util_init();
-}
-
-/*
  * pmemlog_pool_open_common -- (internal) open a log memory pool
  *
  * This routine does all the work, but takes a rdonly flag so internal

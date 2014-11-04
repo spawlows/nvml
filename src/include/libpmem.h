@@ -83,32 +83,6 @@ const char *pmem_check_version(
 		unsigned major_required,
 		unsigned minor_required);
 
-/*
- * Passing NULL to pmem_set_funcs() tells libpmem to continue to use
- * the default for that function.  The replacement functions must
- * not make calls back into libpmem.
- *
- * The print_func is called by libpmem based on the environment
- * variable PMEM_LOG_LEVEL:
- * 	0 or unset: print_func is only called for pmem_pool_stats_print()
- * 	1:          additional details are logged when errors are returned
- * 	2:          basic operations (allocations/frees) are logged
- * 	3:          produce very verbose tracing of function calls in libpmem
- * 	4:          also log obscure stuff used to debug the library itself
- *
- * The default print_func prints to stderr.  Applications can override this
- * by setting the environment variable PMEM_LOG_FILE, or by supplying a
- * replacement print function.
- */
-void pmem_set_funcs(
-		void *(*malloc_func)(size_t size),
-		void (*free_func)(void *ptr),
-		void *(*realloc_func)(void *ptr, size_t size),
-		char *(*strdup_func)(const char *s),
-		void (*print_func)(const char *s),
-		void (*persist_func)(void *addr, size_t len, int flags));
-
-
 #ifdef __cplusplus
 }
 #endif

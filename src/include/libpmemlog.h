@@ -91,6 +91,17 @@ void pmemlog_walk(PMEMlogpool *plp, size_t chunksize,
 	int (*process_chunk)(const void *buf, size_t len, void *arg),
 	void *arg);
 
+/*
+ * Passing NULL to pmemlog_set_funcs() tells libpmemlog to continue to use
+ * the default for that function.  The replacement functions must
+ * not make calls back into libpmemlog.
+ */
+void pmemlog_set_funcs(
+		void *(*malloc_func)(size_t size),
+		void (*free_func)(void *ptr),
+		void *(*realloc_func)(void *ptr, size_t size),
+		char *(*strdup_func)(const char *s));
+
 
 #ifdef __cplusplus
 }

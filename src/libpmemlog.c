@@ -53,13 +53,14 @@ __attribute__((constructor))
 static void
 libpmemlog_init(void)
 {
-	out_init(PMEMLOG_LOG_PREFIX, PMEMLOG_LOG_LEVEL_VAR, PMEMLOG_LOG_FILE_VAR);
+	out_init(PMEMLOG_LOG_PREFIX, PMEMLOG_LOG_LEVEL_VAR,
+			PMEMLOG_LOG_FILE_VAR);
 	LOG(3, NULL);
 	util_init();
 }
 
 /*
- * pmemlog_check_version -- see if library meets application version requirements
+ * pmemlog_check_version -- see if lib meets application version requirements
  */
 const char *
 pmemlog_check_version(unsigned major_required, unsigned minor_required)

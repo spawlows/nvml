@@ -60,7 +60,7 @@ libpmemblk_init(void)
 }
 
 /*
- * pmemblk_check_version -- see if library meets application version requirements
+ * pmemblk_check_version -- see if lib meets application version requirements
  */
 const char *
 pmemblk_check_version(unsigned major_required, unsigned minor_required)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Intel Corporation
+ * Copyright (c) 2014, Intel Corporation
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,61 +31,14 @@
  */
 
 /*
- * libpmeobj.c -- pmem entry points for libpmemobj
+ * traces_pmemobj.c -- unit test traces for library pmemobj
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#include "unittest.h"
 
-#include "libpmemobj.h"
-#include "util.h"
-#include "out.h"
-#include "obj.h"
-
-/*
- * libpmemobj_init -- load-time initialization for obj
- *
- * Called automatically by the run-time loader.
- */
-__attribute__((constructor))
-static void
-libpmemobj_init(void)
+int
+main(int argc, char *argv[])
 {
-	out_init(PMEMOBJ_LOG_PREFIX, PMEMOBJ_LOG_LEVEL_VAR,
-		PMEMOBJ_LOG_FILE_VAR);
-	LOG(3, NULL);
-	util_init();
-}
-
-/*
- * pmemobj_check_version -- see if lib meets application version requirements
- */
-const char *
-pmemobj_check_version(unsigned major_required, unsigned minor_required)
-{
-	LOG(3, "major_required %u minor_required %u",
-			major_required, minor_required);
-
-	static char errstr[] =
-		"libpmemobj major version mismatch (need XXXX, found YYYY)";
-
-	if (major_required != PMEMOBJ_MAJOR_VERSION) {
-		sprintf(errstr,
-			"libpmemobj major version mismatch (need %d, found %d)",
-			major_required, PMEMOBJ_MAJOR_VERSION);
-		LOG(1, "%s", errstr);
-		return errstr;
-	}
-
-	if (minor_required > PMEMOBJ_MINOR_VERSION) {
-		sprintf(errstr,
-			"libpmemobj minor version mismatch (need %d, found %d)",
-			minor_required, PMEMOBJ_MINOR_VERSION);
-		LOG(1, "%s", errstr);
-		return errstr;
-	}
-
-	return NULL;
+	START(argc, argv, "traces_pmemobj");
+	DONE(NULL);
 }

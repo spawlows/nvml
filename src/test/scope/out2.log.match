@@ -8,6 +8,7 @@ pmemlog_pool_check
 pmemlog_pool_close
 pmemlog_pool_open
 pmemlog_rewind
+pmemlog_set_funcs
 pmemlog_tell
 pmemlog_walk
 ../../nondebug/libpmemlog.so:
@@ -19,6 +20,7 @@ pmemlog_pool_check
 pmemlog_pool_close
 pmemlog_pool_open
 pmemlog_rewind
+pmemlog_set_funcs
 pmemlog_tell
 pmemlog_walk
 ../../debug/libpmemlog.a:
@@ -30,6 +32,7 @@ pmemlog_pool_check
 pmemlog_pool_close
 pmemlog_pool_open
 pmemlog_rewind
+pmemlog_set_funcs
 pmemlog_tell
 pmemlog_walk
 ../../nondebug/libpmemlog.a:
@@ -41,5 +44,6 @@ pmemlog_pool_check
 pmemlog_pool_close
 pmemlog_pool_open
 pmemlog_rewind
+pmemlog_set_funcs
 pmemlog_tell
 pmemlog_walk

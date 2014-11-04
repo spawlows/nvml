@@ -51,9 +51,6 @@
 
 #define	PROCMAXLEN 2048 /* maximum expected line length in /proc files */
 
-/* default persist function is pmem_persist() */
-Persist_func Persist = pmem_persist;
-
 /*
  * pmem_drain -- wait for any PM stores to drain from HW buffers
  */
@@ -151,7 +148,7 @@ pmem_persist(void *addr, size_t len, int flags)
 /*
  * pmem_persist_msync -- routine for flushing to persistence
  *
- * This routine calls msync() or Persist(), depending on the is_pmem flag.
+ * This routine calls msync() or pmem_persist(), depending on the is_pmem flag.
  */
 int
 pmem_persist_msync(int is_pmem, void *addr, size_t len)
@@ -159,7 +156,7 @@ pmem_persist_msync(int is_pmem, void *addr, size_t len)
 	LOG(5, "is_pmem %d addr %p len %zu", is_pmem, addr, len);
 
 	if (is_pmem) {
-		Persist(addr, len, 0);
+		pmem_persist(addr, len, 0);
 		return 0;
 	}
 

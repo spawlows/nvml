@@ -42,7 +42,6 @@ libpmem.so {
 		pmem_fence;
 		pmem_drain;
 		pmem_check_version;
-		pmem_set_funcs;
 	local:
 		*;
 };

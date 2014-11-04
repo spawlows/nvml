@@ -35,6 +35,7 @@
 libpmemlog.so {
 	global:
 		pmemlog_check_version;
+		pmemlog_set_funcs;
 		pmemlog_pool_open;
 		pmemlog_pool_close;
 		pmemlog_pool_check;

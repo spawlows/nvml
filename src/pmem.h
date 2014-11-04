@@ -40,9 +40,5 @@
 
 extern unsigned long Pagesize;
 
-typedef void (*Persist_func)(void *addr, size_t len, int flags);
-
-Persist_func Persist;
-
 void pmem_set_persist_func(void (*persist_func)(void *addr,
 			size_t len, int flags));

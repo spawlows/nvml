@@ -83,6 +83,16 @@ PMEMobjpool *pmemobj_pool_open(const char *path);
 void pmemobj_pool_close(PMEMobjpool *pop);
 int pmemobj_pool_check(const char *path);
 
+/*
+ * Passing NULL to pmemlog_set_funcs() tells libpmemobj to continue to use
+ * the default for that function.  The replacement functions must
+ * not make calls back into libpmemlog.
+ */
+void pmemobj_set_funcs(
+		void *(*malloc_func)(size_t size),
+		void (*free_func)(void *ptr),
+		void *(*realloc_func)(void *ptr, size_t size),
+		char *(*strdup_func)(const char *s));
 
 #ifdef __cplusplus
 }

@@ -89,6 +89,17 @@ int pmemblk_write(PMEMblkpool *pbp, const void *buf, off_t blockno);
 int pmemblk_set_zero(PMEMblkpool *pbp, off_t blockno);
 int pmemblk_set_error(PMEMblkpool *pbp, off_t blockno);
 
+/*
+ * Passing NULL to pmemblk_set_funcs() tells libpmemobj to continue to use
+ * the default for that function.  The replacement functions must
+ * not make calls back into libpmemlog.
+ */
+void pmemblk_set_funcs(
+		void *(*malloc_func)(size_t size),
+		void (*free_func)(void *ptr),
+		void *(*realloc_func)(void *ptr, size_t size),
+		char *(*strdup_func)(const char *s));
+
 #ifdef __cplusplus
 }
 #endif

@@ -7,6 +7,7 @@ pmemblk_pool_close
 pmemblk_pool_open
 pmemblk_read
 pmemblk_set_error
+pmemblk_set_funcs
 pmemblk_set_zero
 pmemblk_write
 ../../nondebug/libpmemblk.so:
@@ -17,6 +18,7 @@ pmemblk_pool_close
 pmemblk_pool_open
 pmemblk_read
 pmemblk_set_error
+pmemblk_set_funcs
 pmemblk_set_zero
 pmemblk_write
 ../../debug/libpmemblk.a:
@@ -27,6 +29,7 @@ pmemblk_pool_close
 pmemblk_pool_open
 pmemblk_read
 pmemblk_set_error
+pmemblk_set_funcs
 pmemblk_set_zero
 pmemblk_write
 ../../nondebug/libpmemblk.a:
@@ -37,5 +40,6 @@ pmemblk_pool_close
 pmemblk_pool_open
 pmemblk_read
 pmemblk_set_error
+pmemblk_set_funcs
 pmemblk_set_zero
 pmemblk_write

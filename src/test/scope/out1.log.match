@@ -8,7 +8,6 @@ pmem_is_pmem
 pmem_map
 pmem_persist
 pmem_persist_msync
-pmem_set_funcs
 ../../nondebug/libpmem.so:
 pmem_check_version
 pmem_drain
@@ -18,7 +17,6 @@ pmem_is_pmem
 pmem_map
 pmem_persist
 pmem_persist_msync
-pmem_set_funcs
 ../../debug/libpmem.a:
 pmem_check_version
 pmem_drain
@@ -28,7 +26,6 @@ pmem_is_pmem
 pmem_map
 pmem_persist
 pmem_persist_msync
-pmem_set_funcs
 ../../nondebug/libpmem.a:
 pmem_check_version
 pmem_drain
@@ -38,4 +35,3 @@ pmem_is_pmem
 pmem_map
 pmem_persist
 pmem_persist_msync
-pmem_set_funcs

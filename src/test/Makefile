@@ -51,9 +51,6 @@ TEST = blk_nblock\
        traces\
        traces_custom_function\
        traces_pmem\
-       traces_pmemblk\
-       traces_pmemlog\
-       traces_pmemobj\
        util_map_proc\
        vmem_aligned_alloc\
        vmem_calloc\

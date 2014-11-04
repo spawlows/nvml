@@ -31,7 +31,7 @@
  */
 
 /*
- * traces_pmem.c -- unit test traces for library pmem
+ * traces_pmem.c -- unit test traces for libraries pmem
  */
 
 #include "unittest.h"
